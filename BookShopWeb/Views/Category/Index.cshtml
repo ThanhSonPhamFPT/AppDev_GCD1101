@@ -1,0 +1,33 @@
+﻿@model List<Category>
+@if(TempData["success"]!=null){
+	<h1>@TempData["success"]</h1>
+}
+<div class="row pt-4 pb-4">
+	<div class="col-9">
+		<h2>List of Categories</h2>
+	</div>
+	<div class="col-3">
+		<a asp-controller="Category" asp-action="Create" class="btn btn-primary">Create new Category</a>
+	</div>
+</div>
+<div>
+<table class="table table-bordered"> 
+	<thead>
+		<tr>
+			<th>Category Name</th>
+			<th>Description</th>
+			<th>Display Order</th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach(var  category in  Model )
+		{
+			<tr>
+				<td>@category.Name</td>
+				<td>@category.Description</td>
+				<td>@category.DisplayOrder</td>
+			</tr>
+		}
+	</tbody>
+</table>
+</div>
