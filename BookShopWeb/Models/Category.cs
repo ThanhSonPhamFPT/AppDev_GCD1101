@@ -12,6 +12,7 @@ namespace BookShopWeb.Models
 		public string Name { get; set; }
 		public string Description { get; set; }
 		[DisplayName("Display Order")]
+		[Range(1,100)]
 		public int DisplayOrder { get; set; }
 
 	 

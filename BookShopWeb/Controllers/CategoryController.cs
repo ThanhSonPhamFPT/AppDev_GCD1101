@@ -29,11 +29,47 @@ namespace BookShopWeb.Controllers
 
 		public IActionResult Create(Category category)
 		{
-			_dbContext.Categories.Add(category);
-			_dbContext.SaveChanges();
-			TempData["success"] = "Category created succesfully";
-			return RedirectToAction("Index");
+			if (category.Name == category.Description)
+			{
+				ModelState.AddModelError("Name", "Name can not be equal to Description");
+			}
 
+			if (ModelState.IsValid)
+			{
+                _dbContext.Categories.Add(category);
+                _dbContext.SaveChanges();
+                TempData["success"] = "Category created succesfully";
+                return RedirectToAction("Index");
+            }
+			
+			return View();
+
+		}
+		public IActionResult Edit(int idb)
+		{
+			if (idb==null || idb == 0)
+			{
+				return NotFound();
+			}	
+			Category category = _dbContext.Categories.Find(idb);
+			if(category == null)
+			{
+				return NotFound();
+			}
+			return View(category);
+		}
+		[HttpPost]
+		public IActionResult Edit(Category category) 
+		{
+			if (ModelState.IsValid)
+			{
+				_dbContext.Categories.Update(category);
+				_dbContext.SaveChanges();
+				TempData["success"] = "Category updated succesfully";
+				return RedirectToAction("Index");
+			}
+
+			return View();
 		}
 	}
 }

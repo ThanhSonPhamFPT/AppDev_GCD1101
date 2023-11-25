@@ -1,7 +1,5 @@
 ﻿@model List<Category>
-@if(TempData["success"]!=null){
-	<h1>@TempData["success"]</h1>
-}
+<partial name="Notification"/>
 <div class="row pt-4 pb-4">
 	<div class="col-9">
 		<h2>List of Categories</h2>
@@ -26,6 +24,12 @@
 				<td>@category.Name</td>
 				<td>@category.Description</td>
 				<td>@category.DisplayOrder</td>
+				<td>
+					<div class="btn group" role="group">
+						<a asp-controller="Category" asp-action="Edit" asp-route-idb="@category.Id" class="btn btn-primary">Create</a>
+							<a asp-controller="Category" asp-action="Delete" asp-route-id="@category.Id" class="btn btn-primary">Delete</a>
+					</div>
+				</td>
 			</tr>
 		}
 	</tbody>
