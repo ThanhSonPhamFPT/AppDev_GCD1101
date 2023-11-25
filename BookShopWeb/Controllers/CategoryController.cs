@@ -45,13 +45,13 @@ namespace BookShopWeb.Controllers
 			return View();
 
 		}
-		public IActionResult Edit(int idb)
+		public IActionResult Edit(int? idb)
 		{
 			if (idb==null || idb == 0)
 			{
 				return NotFound();
 			}	
-			Category category = _dbContext.Categories.Find(idb);
+			Category? category = _dbContext.Categories.Find(idb);
 			if(category == null)
 			{
 				return NotFound();
@@ -70,6 +70,27 @@ namespace BookShopWeb.Controllers
 			}
 
 			return View();
+		}
+		public IActionResult Delete(int? idb)
+		{
+			if (idb == null || idb == 0)
+			{
+				return NotFound();
+			}
+			Category? category = _dbContext.Categories.Find(idb);
+			if (category == null)
+			{
+				return NotFound();
+			}
+			return View(category);
+		}
+		[HttpPost]
+		public IActionResult Delete(Category category)
+		{
+				_dbContext.Categories.Remove(category);
+				_dbContext.SaveChanges();
+				TempData["success"] = "Category deleted succesfully";
+				return RedirectToAction("Index");
 		}
 	}
 }

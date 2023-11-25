@@ -17,8 +17,13 @@
         <input asp-for="DisplayOrder">
         <span asp-validation-for="DisplayOrder" class="text-danger"></span>
     </div>
-    
-    <button type="submit" class="btn btn-primary">Submit</button>
+
+        <div class="btn group" role="group">
+            <button type="submit" class="btn btn-primary">Create</button>
+            <a asp-controller="Category" asp-action="Index" class="btn btn-primary">
+                Back to List
+            </a>
+        </div>
     </div>
 </form>
 

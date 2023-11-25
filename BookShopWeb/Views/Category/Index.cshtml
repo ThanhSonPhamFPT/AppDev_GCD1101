@@ -18,7 +18,7 @@
 		</tr>
 	</thead>
 	<tbody>
-		@foreach(var  category in  Model )
+		@foreach(var  category in  Model.OrderBy(u=>u.DisplayOrder))
 		{
 			<tr>
 				<td>@category.Name</td>
@@ -26,8 +26,12 @@
 				<td>@category.DisplayOrder</td>
 				<td>
 					<div class="btn group" role="group">
-						<a asp-controller="Category" asp-action="Edit" asp-route-idb="@category.Id" class="btn btn-primary">Edit</a>
-							<a asp-controller="Category" asp-action="Delete" asp-route-id="@category.Id" class="btn btn-primary">Delete</a>
+						<a asp-controller="Category" asp-action="Edit" asp-route-idb="@category.Id" class="btn btn-primary">
+								<i class="bi bi-pencil"></i> Edit
+							</a>
+							<a asp-controller="Category" asp-action="Delete" asp-route-idb="@category.Id" class="btn text-danger">
+								<i class="bi bi-trash-fill"></i> Delete
+							</a>
 					</div>
 				</td>
 			</tr>

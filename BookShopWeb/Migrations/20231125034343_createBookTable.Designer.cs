@@ -3,6 +3,7 @@ using BookShopWeb.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookShopWeb.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    partial class ApplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20231125034343_createBookTable")]
+    partial class createBookTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -52,44 +55,6 @@ namespace BookShopWeb.Migrations
                     b.HasIndex("CategoryId");
 
                     b.ToTable("Books");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Author = "Microsoft",
-                            CategoryId = 1,
-                            Description = "Basic start",
-                            Price = 10.0,
-                            Title = "Programming"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Author = "BTEC",
-                            CategoryId = 2,
-                            Description = "Enhancing",
-                            Price = 14.0,
-                            Title = "Advanced Programming"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Author = "Greenwich",
-                            CategoryId = 3,
-                            Description = "Not easy",
-                            Price = 15.0,
-                            Title = "Data Structures"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Author = "Microsoft",
-                            CategoryId = 4,
-                            Description = "Full Application",
-                            Price = 20.0,
-                            Title = "App Dev"
-                        });
                 });
 
             modelBuilder.Entity("BookShopWeb.Models.Category", b =>
