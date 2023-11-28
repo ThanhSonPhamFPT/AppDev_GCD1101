@@ -1,36 +1,49 @@
-﻿@model Book
-<h1> @(Model.Id ==0?"Create":"Edit") a Book</h1>
-<form method="post">
+﻿@model BookVM
+<h1> @(Model.Book.Id ==0?"Create":"Edit") a Book</h1>
+<form method="post" enctype="multipart/form-data">
     <div class="border p-3 mt-4">
-        <input asp-for="Id" hidden/>
-        <div class="row mb-3">
-            <label asp-for="Title"></label>
-            <input asp-for="Title">
-            <span asp-validation-for="Title" class="text-danger"></span>
-        </div>
-        <div class="row mb-3">
-            <label asp-for="Description"></label>
-            <input asp-for="Description">
-            <span asp-validation-for="Description" class="text-danger"></span>
-        </div>
-        <div class="row mb-3">
-            <label asp-for="Author"></label>
-            <input asp-for="Author">
-            <span asp-validation-for="Author" class="text-danger"></span>
-        </div>
-        <div class="row mb-3">
-            <label asp-for="Price"></label>
-            <input asp-for="Price">
-            <span asp-validation-for="Price" class="text-danger"></span>
-         </div>
-        <div class="row mb-3">
-            <label asp-for="CategoryId"></label>
-            <input asp-for="CategoryId">
-            <span asp-validation-for="CategoryId" class="text-danger"></span>
-        </div>
+        <input asp-for="Book.Id" hidden />
+        <input asp-for="Book.ImageUrl" hidden/>
+        <div class="row">
+            <div class="col-10">
 
+                <div class="row mb-3">
+                    <label asp-for="Book.Title"></label>
+                    <input asp-for="Book.Title">
+                    <span asp-validation-for="Book.Title" class="text-danger"></span>
+                </div>
+                <div class="row mb-3">
+                    <label asp-for="Book.Description"></label>
+                    <input asp-for="Book.Description">
+                    <span asp-validation-for="Book.Description" class="text-danger"></span>
+                </div>
+                <div class="row mb-3">
+                    <label asp-for="Book.Author"></label>
+                    <input asp-for="Book.Author">
+                    <span asp-validation-for="Book.Author" class="text-danger"></span>
+                </div>
+                <div class="row mb-3">
+                    <label asp-for="Book.Price"></label>
+                    <input asp-for="Book.Price">
+                    <span asp-validation-for="Book.Price" class="text-danger"></span>
+                 </div>
+                <div class="row mb-3">
+                    <label asp-for="Book.CategoryId"></label>
+                    <select asp-for="Book.CategoryId" asp-items="@Model.MyCategories" class="form-select">
+
+                    </select>
+                </div>
+                <div class="row mb-3">
+                    <label asp-for="Book.ImageUrl"></label>
+                    <input type="file" name="file" class="form-control">
+                 </div>
+             </div>
+             <div class="col-2">
+                 <img src="@Model.Book.ImageUrl" width="100%"/>
+             </div>
+        </div>
         <div class="btn group" role="group">
-            @if (Model.Id == 0)
+            @if (Model.Book.Id == 0)
             {
                 <button type="submit" class="btn btn-primary">Create</button>
             }

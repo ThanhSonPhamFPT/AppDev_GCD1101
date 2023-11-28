@@ -3,6 +3,7 @@ using BookShopWeb.Models;
 using BookShopWeb.Repository;
 using BookShopWeb.Repository.IRepository;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace BookShopWeb.Controllers
 {
@@ -10,53 +11,97 @@ namespace BookShopWeb.Controllers
     {
         //private readonly ApplicationDBContext _dbContext;
         private readonly IUnitOfWork _unitOfWork;
-        public BookController(IUnitOfWork unitOfWork)
+        private readonly IWebHostEnvironment _webhost;
+        public BookController(IUnitOfWork unitOfWork, IWebHostEnvironment webhost)
         {
             _unitOfWork = unitOfWork;
+            _webhost = webhost;
         }
         public IActionResult Index()
         {
-            List<Book> books = _unitOfWork.BookRepository.GetAll().ToList();
+            List<Book> books = _unitOfWork.BookRepository.GetAll("Category").ToList();
             return View(books);
         }
 		public IActionResult CreateUpdate(int? id)
 		{
-			Book book = new Book();
+			BookVM bookVM = new BookVM()
+            {
+                MyCategories = _unitOfWork.CategoryRepository.GetAll().
+                Select(u=> new SelectListItem
+                {
+                    Text = u.Name,
+                    Value =u.Id.ToString()
+                }),
+                Book = new Book()
+            };
 			if (id == null ||id==0)
 			{
 				//Create new Book
-                return View(book);
+                return View(bookVM);
             }
 			else
 			{
 				//Update a Book
-				book = _unitOfWork.BookRepository.Get(book=>book.Id == id);
-				return View(book);
+				bookVM.Book = _unitOfWork.BookRepository.Get(book=>book.Id == id);
+				return View(bookVM);
 			}
 			
 		}
 		[HttpPost]
 
-		public IActionResult CreateUpdate(Book book)
+		public IActionResult CreateUpdate(BookVM bookVM,IFormFile? file)
 		{
 			
 			if (ModelState.IsValid)
 			{
-                if (book.Id == 0)
+                string wwwRootPath = _webhost.WebRootPath;
+                if (file != null){
+                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                    string bookPath = Path.Combine(wwwRootPath, "img");
+                    if (!String.IsNullOrEmpty(bookVM.Book.ImageUrl))
+                    {
+                        //Delete old image
+                        var oldImagePath = Path.Combine(wwwRootPath, bookVM.Book.ImageUrl.TrimStart('\\'));
+                        if (System.IO.File.Exists(oldImagePath))
+                        {
+                            System.IO.File.Delete(oldImagePath);
+                        }
+                    }
+                    using (var fileStream = new FileStream(Path.Combine(bookPath, fileName), FileMode.Create))
+                    {
+                        file.CopyTo(fileStream);
+                    }
+                    bookVM.Book.ImageUrl = @"\img\" + fileName;
+                }
+                if (bookVM.Book.Id == 0)
                 {
-                    _unitOfWork.BookRepository.Add(book);
+                    _unitOfWork.BookRepository.Add(bookVM.Book);
                     TempData["success"] = "Book created succesfully";
                 }
                 else
                 {
-                    _unitOfWork.BookRepository.Update(book);
+                    _unitOfWork.BookRepository.Update(bookVM.Book);
                     TempData["success"] = "Book updated succesfully";
                 }
                 _unitOfWork.Save();
                 return RedirectToAction("Index");
-			}
+            }
+            else
+            {
+                BookVM bookVMNew = new BookVM()
+                {
+                    MyCategories = _unitOfWork.CategoryRepository.GetAll().
+                                Select(u => new SelectListItem
+                                {
+                                    Text = u.Name,
+                                    Value = u.Id.ToString()
+                                }),
+                    Book = new Book()
+                };
+                return View(bookVMNew);
+            }
 
-			return View();
+			
 
 		}
         public IActionResult Delete(int? id)
