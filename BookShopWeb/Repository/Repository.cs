@@ -38,10 +38,6 @@ namespace BookShopWeb.Repository
             dbSet.Remove(entity);
         }
 
-        public void Save()
-        {
-            _dbContext.SaveChanges();
-        }
 
     }
 }

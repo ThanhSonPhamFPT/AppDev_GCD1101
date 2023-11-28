@@ -9,14 +9,15 @@ namespace BookShopWeb.Controllers
 	public class CategoryController : Controller
 	{
 		//private readonly ApplicationDBContext _dbContext
-		private readonly ICategoryRepository categoryRepository;
-		public CategoryController(ICategoryRepository category)
+		//private readonly ICategoryRepository _categoryRepository;
+		private readonly IUnitOfWork _unitOfWork;
+		public CategoryController(IUnitOfWork unitOfWork)
 		{
-			categoryRepository = category;
+			_unitOfWork = unitOfWork;
 		}
 		public IActionResult Index()
 		{
-			List<Category> categories = categoryRepository.GetAll().ToList();
+			List<Category> categories = _unitOfWork.CategoryRepository.GetAll().ToList();
 			return View(categories);
 		}
 
@@ -39,8 +40,8 @@ namespace BookShopWeb.Controllers
 
 			if (ModelState.IsValid)
 			{
-                categoryRepository.Add(category);
-				categoryRepository.Save();
+                _unitOfWork.CategoryRepository.Add(category);
+				_unitOfWork.Save();
                 TempData["success"] = "Category created succesfully";
                 return RedirectToAction("Index");
             }
@@ -54,7 +55,7 @@ namespace BookShopWeb.Controllers
 			{
 				return NotFound();
 			}	
-			Category? category = categoryRepository.Get(c => c.Id == idb);
+			Category? category = _unitOfWork.CategoryRepository.Get(c => c.Id == idb);
 			
 			if(category == null)
 			{
@@ -67,8 +68,8 @@ namespace BookShopWeb.Controllers
 		{
 			if (ModelState.IsValid)
 			{
-				categoryRepository.Update(category);
-				categoryRepository.Save();
+				_unitOfWork.CategoryRepository.Update(category);
+				_unitOfWork.Save();
 				TempData["success"] = "Category updated succesfully";
 				return RedirectToAction("Index");
 			}
@@ -81,7 +82,7 @@ namespace BookShopWeb.Controllers
             {
                 return NotFound();
             }
-			Category? category = categoryRepository.Get(c => c.Id == idb); 
+			Category? category = _unitOfWork.CategoryRepository.Get(c => c.Id == idb); 
 			if (category == null)
 			{
 				return NotFound();
@@ -91,8 +92,8 @@ namespace BookShopWeb.Controllers
 		[HttpPost]
 		public IActionResult Delete(Category category)
 		{
-				categoryRepository.Remove(category);
-				categoryRepository.Save();
+				_unitOfWork.CategoryRepository.Remove(category);
+				_unitOfWork.Save();
 				TempData["success"] = "Category deleted succesfully";
 				return RedirectToAction("Index");
 		}
