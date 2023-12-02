@@ -1,12 +1,14 @@
 ﻿using BookShopWeb.Data;
 using BookShopWeb.Models;
+using BookShopWeb.Models.ViewModel;
 using BookShopWeb.Repository;
 using BookShopWeb.Repository.IRepository;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace BookShopWeb.Controllers
+namespace BookShopWeb.Areas.Admin.Controllers
 {
+    [Area("Admin")]
     public class BookController : Controller
     {
         //private readonly ApplicationDBContext _dbContext;
@@ -22,43 +24,44 @@ namespace BookShopWeb.Controllers
             List<Book> books = _unitOfWork.BookRepository.GetAll("Category").ToList();
             return View(books);
         }
-		public IActionResult CreateUpdate(int? id)
-		{
-			BookVM bookVM = new BookVM()
+        public IActionResult CreateUpdate(int? id)
+        {
+            BookVM bookVM = new BookVM()
             {
                 MyCategories = _unitOfWork.CategoryRepository.GetAll().
-                Select(u=> new SelectListItem
+                Select(u => new SelectListItem
                 {
                     Text = u.Name,
-                    Value =u.Id.ToString()
+                    Value = u.Id.ToString()
                 }),
                 Book = new Book()
             };
-			if (id == null ||id==0)
-			{
-				//Create new Book
+            if (id == null || id == 0)
+            {
+                //Create new Book
                 return View(bookVM);
             }
-			else
-			{
-				//Update a Book
-				bookVM.Book = _unitOfWork.BookRepository.Get(book=>book.Id == id);
-				return View(bookVM);
-			}
-			
-		}
-		[HttpPost]
+            else
+            {
+                //Update a Book
+                bookVM.Book = _unitOfWork.BookRepository.Get(book => book.Id == id);
+                return View(bookVM);
+            }
 
-		public IActionResult CreateUpdate(BookVM bookVM,IFormFile? file)
-		{
-			
-			if (ModelState.IsValid)
-			{
+        }
+        [HttpPost]
+
+        public IActionResult CreateUpdate(BookVM bookVM, IFormFile? file)
+        {
+
+            if (ModelState.IsValid)
+            {
                 string wwwRootPath = _webhost.WebRootPath;
-                if (file != null){
+                if (file != null)
+                {
                     string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
                     string bookPath = Path.Combine(wwwRootPath, "img");
-                    if (!String.IsNullOrEmpty(bookVM.Book.ImageUrl))
+                    if (!string.IsNullOrEmpty(bookVM.Book.ImageUrl))
                     {
                         //Delete old image
                         var oldImagePath = Path.Combine(wwwRootPath, bookVM.Book.ImageUrl.TrimStart('\\'));
@@ -101,9 +104,9 @@ namespace BookShopWeb.Controllers
                 return View(bookVMNew);
             }
 
-			
 
-		}
+
+        }
         public IActionResult Delete(int? id)
         {
             if (id == null || id == 0)
