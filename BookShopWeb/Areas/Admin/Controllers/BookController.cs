@@ -3,12 +3,14 @@ using BookShopWeb.Models;
 using BookShopWeb.Models.ViewModel;
 using BookShopWeb.Repository;
 using BookShopWeb.Repository.IRepository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace BookShopWeb.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles ="Admin")]
     public class BookController : Controller
     {
         //private readonly ApplicationDBContext _dbContext;

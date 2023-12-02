@@ -1,12 +1,14 @@
 ﻿using BookShopWeb.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookShopWeb.Data
 {
-	public class ApplicationDBContext : DbContext
+	public class ApplicationDBContext : IdentityDbContext
 	{
 		public DbSet<Category> Categories { get; set; }
 		public DbSet<Book> Books { get; set; }
+        public DbSet<ApplicationUser> applicationUsers { get; set; }
 		public ApplicationDBContext(DbContextOptions<ApplicationDBContext> option):base(option)
 		{ 
 
@@ -14,6 +16,7 @@ namespace BookShopWeb.Data
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
+            base.OnModelCreating(modelBuilder);
 			modelBuilder.Entity<Category>().HasData(
 				new Category { Id = 1, Name = "Romansss", Description = "A lot of roman stories", DisplayOrder = 2 },
 				new Category { Id = 2, Name = "Action", Description = "Show you how is an action", DisplayOrder = 1 },

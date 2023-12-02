@@ -2,6 +2,9 @@ using BookShopWeb.Data;
 using BookShopWeb.Repository;
 using BookShopWeb.Repository.IRepository;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using BookShopWeb.Utility;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,8 +13,19 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationDBContext>(options =>
 	options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
+
+builder.Services.AddIdentity<IdentityUser,IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<ApplicationDBContext>().AddDefaultTokenProviders();
 //builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IUnitOfWork,UnitOfWorks>();
+builder.Services.AddScoped<IEmailSender, EmailSender>();
+builder.Services.AddRazorPages();
+
+builder.Services.ConfigureApplicationCookie(option =>
+{
+	option.LoginPath = $"/Identity/Account/Login";
+	option.LogoutPath = $"/Identity/Account/Logout";
+	option.AccessDeniedPath = @"/Identity/Account/AccessDenied";
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -26,8 +40,9 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
+app.UseAuthentication();
 app.UseAuthorization();
+app.MapRazorPages();
 
 app.MapControllerRoute(
 	name: "default",

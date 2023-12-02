@@ -1,12 +1,14 @@
 ﻿using BookShopWeb.Data;
 using BookShopWeb.Models;
 using BookShopWeb.Repository.IRepository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookShopWeb.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "Admin")]
     public class CategoryController : Controller
     {
         //private readonly ApplicationDBContext _dbContext
